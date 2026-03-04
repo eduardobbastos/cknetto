@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cknetto interiores | Design de Interiores Moderno</title>
+    <meta name="description"
+        content="Portfolio de cknetto interiores. Design de interiores sofisticado, moderno e funcional. Transmutando espaços em experiências.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="custom-cursor"></div>
+
+    <header class="header">
+        <nav class="nav container">
+            <a href="#" class="logo">
+                <span class="logo-text">CKNETTO</span>
+                <span class="logo-sub">INTERIORES</span>
+            </a>
+            <ul class="nav-list">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#projects" class="nav-link">Projetos</a></li>
+                <li><a href="#about" class="nav-link">Sobre</a></li>
+                <li><a href="#contact" class="nav-link">Contato</a></li>
+            </ul>
+            <div class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="hero-overlay"></div>
+            <div class="hero-content container">
+                <h1 class="hero-title reveal">Essência & <br><span>Inovação</span></h1>
+                <p class="hero-description reveal">Criamos ambientes que contam histórias e elevam o seu estilo de vida
+                    através do design contemporâneo.</p>
+                <a href="#projects" class="btn btn-primary reveal">Ver Projetos</a>
+            </div>
+            <div class="scroll-indicator">
+                <span></span>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section class="projects section" id="projects">
+            <div class="container">
+                <h2 class="section-title reveal">Projetos Selecionados</h2>
+            </div>
+
+            <div class="carousel-container reveal">
+                <div class="carousel-track" id="projects-carousel">
+                    <!-- Dynamic cards will be injected here -->
+                    <div class="loader">Carregando projetos...</div>
+                </div>
+
+                <button class="carousel-btn prev" aria-label="Anterior">&lsaquo;</button>
+                <button class="carousel-btn next" aria-label="Próximo">&rsaquo;</button>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about section" id="about">
+            <div class="about-container container">
+                <div class="about-content reveal">
+                    <h2 class="section-title left">Sobre a cknetto</h2>
+                    <p class="about-text">
+                        Com um olhar atento aos detalhes e uma paixão pela funcionalidade estética, a cknetto interiores
+                        transforma espaços comuns em ambientes extraordinários. Nossa abordagem combina tecnologia,
+                        materiais nobres e uma curadoria exclusiva para cada cliente.
+                    </p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-num">50+</span>
+                            <span class="stat-label">Projetos</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-num">10</span>
+                            <span class="stat-label">Anos de Exp</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-img-wrapper reveal">
+                    <img src="assets/portfolio/about.png" alt="Designer Image" class="about-img">
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact section container" id="contact">
+            <div class="contact-box reveal">
+                <h2 class="section-title">Vamos planejar seu próximo espaço?</h2>
+                <p class="contact-description">Entre em contato para uma consultoria personalizada.</p>
+                <div class="contact-links">
+                    <a href="mailto:contato@cknetto.com" class="contact-link">contato@cknetto.com</a>
+                    <a href="tel:+551199999999" class="contact-link">+55 (11) 99999-9999</a>
+                </div>
+                <div class="social-links">
+                    <a href="#" class="social-link">Instagram</a>
+                    <a href="#" class="social-link">Pinterest</a>
+                    <a href="#" class="social-link">LinkedIn</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2024 cknetto interiores. Todos os direitos reservados.</p>
+            <p>Design by Antigravity</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
