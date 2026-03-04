@@ -1,12 +1,13 @@
 // Google Sheets URL (CSV Export)
-// Format based on user request: Nome do Cliente, Localização, Nome do Ambiente, Descrição do Ambiente, Estilo de Design, URL da Imagem
 const SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1TQ_xM-NIjgikHM4DHDJxQUtFQySUglSRVs-Dcqzfi7U/export?format=csv&gid=0';
 
 // Custom Cursor
 const cursor = document.querySelector('.custom-cursor');
 document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
+    if (cursor) {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    }
 });
 
 // Helper to convert Google Drive links to direct image links
@@ -14,7 +15,6 @@ function getDirectImageUrl(url) {
     if (!url) return 'assets/portfolio/living_room.png';
     url = url.trim().replace(/^"|"$/g, '');
 
-    // If it's a Google Drive link, extract ID and convert
     if (url.includes('drive.google.com')) {
         const idMatch = url.match(/\/d\/(.+?)\//) || url.match(/id=(.+?)(?:&|$)/);
         if (idMatch && idMatch[1]) {
@@ -58,12 +58,14 @@ async function fetchProjects() {
         renderCarousel(projects);
     } catch (error) {
         console.error('Erro ao buscar projetos:', error);
-        document.getElementById('projects-carousel').innerHTML = '<div class="loader">Erro ao carregar projetos.</div>';
+        const carousel = document.getElementById('projects-carousel');
+        if (carousel) carousel.innerHTML = '<div class="loader">Erro ao carregar projetos.</div>';
     }
 }
 
 function renderCarousel(projects) {
     const carousel = document.getElementById('projects-carousel');
+    if (!carousel) return;
 
     projects.forEach((project) => {
         const card = document.createElement('div');
@@ -75,13 +77,10 @@ function renderCarousel(projects) {
             <div class="project-info">
                 <span class="project-label">Cliente</span>
                 <span class="project-value">${project.cliente}</span>
-                
                 <span class="project-label">Localização</span>
                 <span class="project-value">${project.local}</span>
-                
                 <span class="project-label">Ambiente</span>
                 <h3 class="project-ambiente">${project.ambiente}</h3>
-                
                 <span class="project-label">Estilo de Design</span>
                 <p class="project-estilo">${project.estilo}</p>
             </div>
@@ -98,13 +97,18 @@ function openModal(imgSrc, description) {
     const modalImg = document.getElementById('modal-img');
     const modalDesc = document.getElementById('modal-desc');
 
-    modal.style.display = "block";
-    modalImg.src = imgSrc;
-    modalDesc.innerText = description;
+    if (modal && modalImg && modalDesc) {
+        modal.style.display = "block";
+        modalImg.src = imgSrc;
+        modalDesc.innerText = description;
+    }
 }
 
-document.querySelector('.modal-close').onclick = function () {
-    document.getElementById('project-modal').style.display = "none";
+const closeBtn = document.querySelector('.modal-close');
+if (closeBtn) {
+    closeBtn.onclick = function () {
+        document.getElementById('project-modal').style.display = "none";
+    }
 }
 
 window.onclick = function (event) {
@@ -147,10 +151,13 @@ function createHeroPuzzle() {
     });
 }
 
+// Single definition of initCarouselLogic
 function initCarouselLogic() {
     const track = document.getElementById('projects-carousel');
     const prevBtn = document.querySelector('.carousel-btn.prev');
     const nextBtn = document.querySelector('.carousel-btn.next');
+
+    if (!track || !prevBtn || !nextBtn) return;
 
     let currentIndex = 0;
     const cards = track.querySelectorAll('.project-card');
@@ -166,9 +173,11 @@ function initCarouselLogic() {
             const gap = window.innerWidth <= 968 ? 20 : 30;
             const cardWidth = cards[0].offsetWidth + gap;
             const cardsPerView = getCardsPerView();
+
             if (currentIndex > totalCards - cardsPerView) {
                 currentIndex = Math.max(0, totalCards - cardsPerView);
             }
+
             const offset = -currentIndex * cardWidth;
             track.style.transform = `translateX(${offset}px)`;
             track.style.opacity = '1';
@@ -178,7 +187,7 @@ function initCarouselLogic() {
     nextBtn.addEventListener('click', () => {
         const cardsPerView = getCardsPerView();
         if (currentIndex < totalCards - cardsPerView) {
-            currentIndex += 1;
+            currentIndex += 1; // Always 1 by 1
         } else {
             currentIndex = 0;
         }
@@ -187,12 +196,30 @@ function initCarouselLogic() {
 
     prevBtn.addEventListener('click', () => {
         if (currentIndex > 0) {
-            currentIndex -= 1;
+            currentIndex -= 1; // Always 1 by 1
         } else {
             currentIndex = Math.max(0, totalCards - getCardsPerView());
         }
         updateCarousel();
     });
+
+    // Touch Support for Swipe
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    track.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    track.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        const swipeThreshold = 50;
+        if (touchEndX < touchStartX - swipeThreshold) {
+            nextBtn.click();
+        } else if (touchEndX > touchStartX + swipeThreshold) {
+            prevBtn.click();
+        }
+    }, { passive: true });
 
     window.addEventListener('resize', () => {
         clearTimeout(window.resizeTimer);
@@ -200,8 +227,8 @@ function initCarouselLogic() {
     });
 
     track.querySelectorAll('.project-card').forEach(card => {
-        card.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-        card.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        card.addEventListener('mouseenter', () => cursor && cursor.classList.add('hover'));
+        card.addEventListener('mouseleave', () => cursor && cursor.classList.remove('hover'));
     });
 }
 
@@ -222,10 +249,9 @@ window.addEventListener('scroll', revealOnScroll);
 // Header Style on Scroll
 window.addEventListener('scroll', () => {
     const header = document.querySelector('.header');
-    if (window.scrollY > 50) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
+    if (header) {
+        if (window.scrollY > 50) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
     }
 });
 
@@ -250,7 +276,7 @@ const initMobileMenu = () => {
     }
 };
 
-// Initialize
+// Main Initialization
 window.addEventListener('DOMContentLoaded', () => {
     fetchProjects();
     createHeroPuzzle();
