@@ -9,43 +9,49 @@ document.addEventListener('mousemove', (e) => {
     cursor.style.top = e.clientY + 'px';
 });
 
+// Helper to convert Google Drive links to direct image links
+function getDirectImageUrl(url) {
+    if (!url) return 'assets/portfolio/living_room.png';
+    url = url.trim().replace(/^"|"$/g, '');
+
+    // If it's a Google Drive link, extract ID and convert
+    if (url.includes('drive.google.com')) {
+        const idMatch = url.match(/\/d\/(.+?)\//) || url.match(/id=(.+?)(?:&|$)/);
+        if (idMatch && idMatch[1]) {
+            return `https://lh3.googleusercontent.com/u/0/d/${idMatch[1]}`;
+        }
+    }
+
+    if (!url.startsWith('http') && !url.startsWith('assets/')) {
+        return `assets/portfolio/${url}`;
+    }
+
+    return url;
+}
+
 // Dynamic Projects Loading
 async function fetchProjects() {
     try {
         const response = await fetch(SHEETS_URL);
         const data = await response.text();
 
-        // Simple CSV parse (handling potential commas in quoted strings if needed, though split(',') is often enough for simple sheets)
-        // Using a more robust regex to split by comma but preserve quoted content if any
         const rows = data.split(/\r?\n/).slice(1);
         const carousel = document.getElementById('projects-carousel');
 
         if (!carousel) return;
-        carousel.innerHTML = ''; // Clear loader
+        carousel.innerHTML = '';
 
         const projects = rows.map(row => {
-            // Regex to handle potential commas inside quotes
-            const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-            if (!cols || cols.length < 6) {
-                // Fallback for simple split if regex fails
-                const simpleCols = row.split(',');
-                if (simpleCols.length < 6) return null;
-                return {
-                    cliente: simpleCols[0].replace(/"/g, ''),
-                    local: simpleCols[1].replace(/"/g, ''),
-                    ambiente: simpleCols[2].replace(/"/g, ''),
-                    descricao: simpleCols[3].replace(/"/g, ''),
-                    estilo: simpleCols[4].replace(/"/g, ''),
-                    img: simpleCols[5].trim().replace(/"/g, '')
-                };
-            }
+            const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if (!cols || cols.length < 6) return null;
+
             return {
-                cliente: cols[0].replace(/"/g, ''),
-                local: cols[1].replace(/"/g, ''),
-                ambiente: cols[2].replace(/"/g, ''),
-                descricao: cols[3].replace(/"/g, ''),
-                estilo: cols[4].replace(/"/g, ''),
-                img: cols[5].trim().replace(/"/g, '')
+                cliente: cols[0].trim().replace(/^"|"$/g, ''),
+                local: cols[1].trim().replace(/^"|"$/g, ''),
+                ambiente: cols[2].trim().replace(/^"|"$/g, ''),
+                descricao: cols[3].trim().replace(/^"|"$/g, ''),
+                estilo: cols[4].trim().replace(/^"|"$/g, ''),
+                img: getDirectImageUrl(cols[5])
             };
         }).filter(p => p !== null);
 
@@ -108,12 +114,6 @@ window.onclick = function (event) {
     }
 }
 
-// Initialize
-window.addEventListener('DOMContentLoaded', () => {
-    fetchProjects();
-    createHeroPuzzle();
-});
-
 // Hero Puzzle Animation
 function createHeroPuzzle() {
     const heroWrapper = document.getElementById('hero-puzzle');
@@ -128,19 +128,13 @@ function createHeroPuzzle() {
         for (let c = 0; c < cols; c++) {
             const piece = document.createElement('div');
             piece.className = 'puzzle-piece';
-
-            // Set background position based on grid coordinates
             piece.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
-
             heroWrapper.appendChild(piece);
         }
     }
 
-    // Staggered Reveal
     const pieces = document.querySelectorAll('.puzzle-piece');
     const indices = Array.from(Array(pieces.length).keys());
-
-    // Shuffle indices for a random puzzle effect
     for (let i = indices.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [indices[i], indices[j]] = [indices[j], indices[i]];
@@ -149,7 +143,7 @@ function createHeroPuzzle() {
     indices.forEach((idx, i) => {
         setTimeout(() => {
             pieces[idx].classList.add('visible');
-        }, i * 30); // Reveal one by one quickly
+        }, i * 30);
     });
 }
 
@@ -161,40 +155,50 @@ function initCarouselLogic() {
     let currentIndex = 0;
     const cards = track.querySelectorAll('.project-card');
     const totalCards = cards.length;
-    const cardsPerView = 3;
+
+    function getCardsPerView() {
+        return window.innerWidth <= 968 ? 1 : 3;
+    }
 
     function updateCarousel() {
-        track.style.opacity = '0'; // Fade out
-
+        track.style.opacity = '0';
         setTimeout(() => {
-            const cardWidth = cards[0].offsetWidth + 30; // 30 is the gap
+            const gap = window.innerWidth <= 968 ? 20 : 30;
+            const cardWidth = cards[0].offsetWidth + gap;
+            const cardsPerView = getCardsPerView();
+            if (currentIndex > totalCards - cardsPerView) {
+                currentIndex = Math.max(0, totalCards - cardsPerView);
+            }
             const offset = -currentIndex * cardWidth;
             track.style.transform = `translateX(${offset}px)`;
-            track.style.opacity = '1'; // Fade in
-        }, 500); // Wait for fade out to complete
+            track.style.opacity = '1';
+        }, 500);
     }
 
     nextBtn.addEventListener('click', () => {
+        const cardsPerView = getCardsPerView();
         if (currentIndex < totalCards - cardsPerView) {
-            currentIndex += cardsPerView;
-            if (currentIndex > totalCards - cardsPerView) currentIndex = totalCards - cardsPerView;
+            currentIndex += 1;
         } else {
-            currentIndex = 0; // Wrap around
+            currentIndex = 0;
         }
         updateCarousel();
     });
 
     prevBtn.addEventListener('click', () => {
         if (currentIndex > 0) {
-            currentIndex -= cardsPerView;
-            if (currentIndex < 0) currentIndex = 0;
+            currentIndex -= 1;
         } else {
-            currentIndex = Math.max(0, totalCards - cardsPerView); // Wrap to end
+            currentIndex = Math.max(0, totalCards - getCardsPerView());
         }
         updateCarousel();
     });
 
-    // Cursor effects for new cards
+    window.addEventListener('resize', () => {
+        clearTimeout(window.resizeTimer);
+        window.resizeTimer = setTimeout(updateCarousel, 250);
+    });
+
     track.querySelectorAll('.project-card').forEach(card => {
         card.addEventListener('mouseenter', () => cursor.classList.add('hover'));
         card.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
@@ -207,8 +211,7 @@ const revealOnScroll = () => {
     reveals.forEach(reveal => {
         const windowHeight = window.innerHeight;
         const elementTop = reveal.getBoundingClientRect().top;
-        const elementVisible = 150;
-        if (elementTop < windowHeight - elementVisible) {
+        if (elementTop < windowHeight - 150) {
             reveal.classList.add('active');
         }
     });
@@ -217,8 +220,8 @@ const revealOnScroll = () => {
 window.addEventListener('scroll', revealOnScroll);
 
 // Header Style on Scroll
-const header = document.querySelector('.header');
 window.addEventListener('scroll', () => {
+    const header = document.querySelector('.header');
     if (window.scrollY > 50) {
         header.classList.add('scrolled');
     } else {
@@ -226,9 +229,31 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Parallax Effect for Hero
-window.addEventListener('scroll', () => {
-    const hero = document.querySelector('.hero');
-    const scroll = window.pageYOffset;
-    if (hero) hero.style.backgroundPositionY = scroll * 0.5 + 'px';
+// Mobile Menu
+const initMobileMenu = () => {
+    const toggle = document.getElementById('nav-toggle');
+    const nav = document.querySelector('.nav-list');
+    const links = document.querySelectorAll('.nav-link');
+
+    if (toggle && nav) {
+        toggle.addEventListener('click', () => {
+            toggle.classList.toggle('active');
+            nav.classList.toggle('active');
+        });
+
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                toggle.classList.remove('active');
+                nav.classList.remove('active');
+            });
+        });
+    }
+};
+
+// Initialize
+window.addEventListener('DOMContentLoaded', () => {
+    fetchProjects();
+    createHeroPuzzle();
+    initMobileMenu();
+    revealOnScroll();
 });

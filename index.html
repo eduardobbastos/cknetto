@@ -23,9 +23,13 @@
 
     <header class="header">
         <nav class="nav container">
-            <a href="#" class="logo">
-                <span class="logo-text">CKNETTO</span>
-                <span class="logo-sub">INTERIORES</span>
+            <a href="#home" class="logo">
+                <img src="https://lh3.googleusercontent.com/u/0/d/1cASBQOoVXj50gYjE_ROW8u7tgpjcrjSd" alt="cknetto"
+                    class="logo-img">
+                <div class="logo-text-group">
+                    <span class="logo-name">CKNETTO</span>
+                    <span class="logo-type">INTERIORES</span>
+                </div>
             </a>
             <ul class="nav-list">
                 <li><a href="#home" class="nav-link">Home</a></li>
@@ -34,6 +38,7 @@
                 <li><a href="#contact" class="nav-link">Contato</a></li>
             </ul>
             <div class="nav-toggle" id="nav-toggle">
+                <span></span>
                 <span></span>
                 <span></span>
             </div>
@@ -129,8 +134,11 @@
     <div id="project-modal" class="modal">
         <span class="modal-close">&times;</span>
         <div class="modal-content">
-            <img id="modal-img" src="" alt="Expanded Project Image">
+            <div class="modal-img-container">
+                <img id="modal-img" src="" alt="Expanded Project Image" class="modal-img">
+            </div>
             <div class="modal-info">
+                <h3>Detalhes do Ambiente</h3>
                 <p id="modal-desc"></p>
             </div>
         </div>

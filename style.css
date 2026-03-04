@@ -17,7 +17,6 @@
     padding: 0;
     box-sizing: border-box;
     cursor: none;
-    /* Custom cursor implementation later */
 }
 
 html {
@@ -80,9 +79,10 @@ h3 {
 }
 
 .header.scrolled {
-    background: rgba(15, 15, 15, 0.8);
-    backdrop-filter: blur(10px);
+    background: rgba(15, 15, 15, 0.84);
+    backdrop-filter: blur(15px);
     padding: 15px 0;
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .nav {
@@ -92,23 +92,40 @@ h3 {
 }
 
 .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     text-decoration: none;
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+
+.logo-text-group {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    line-height: 1;
 }
 
-.logo-text {
+.logo-name {
     font-size: 1.5rem;
     font-weight: 700;
-    letter-spacing: 5px;
+    letter-spacing: 4px;
     color: var(--text-color);
+    text-transform: uppercase;
 }
 
-.logo-sub {
-    font-size: 0.6rem;
-    letter-spacing: 4px;
+.logo-type {
+    font-size: 0.65rem;
+    letter-spacing: 5px;
     color: var(--primary-color);
-    font-weight: 300;
+    font-weight: 400;
+    margin-top: 4px;
+    text-transform: uppercase;
 }
 
 .nav-list {
@@ -141,9 +158,7 @@ h3 {
     display: flex;
     align-items: center;
     position: relative;
-    /* background: url('assets/portfolio/living_room.png') center/cover no-repeat; */
     background: var(--bg-color);
-    /* Background color while puzzle reveals */
     overflow: hidden;
 }
 
@@ -160,9 +175,10 @@ h3 {
 .puzzle-piece {
     background-image: url('assets/portfolio/living_room.png');
     background-size: 100vw 100vh;
+    background-attachment: fixed;
     opacity: 0;
-    transform: scale(0.8);
-    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: scale(0.85);
+    transition: opacity 1s ease, transform 1s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .puzzle-piece.visible {
@@ -176,7 +192,7 @@ h3 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3));
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.8));
 }
 
 .hero-content {
@@ -192,7 +208,6 @@ h3 {
 
 .hero-title span {
     color: var(--primary-color);
-    font-style: italic;
 }
 
 .hero-description {
@@ -260,48 +275,28 @@ h3 {
     }
 }
 
-/* Projects Carousel */
-.projects.section {
-    overflow: hidden;
-    padding-right: 0;
-    padding-left: 0;
-}
-
+/* Projects */
 .carousel-container {
     position: relative;
     width: 100%;
     margin-top: 50px;
+    overflow: hidden;
 }
 
 .carousel-track {
     display: flex;
     gap: 30px;
-    padding: 20px 50px;
-    transition: opacity 0.5s ease;
-    /* For fade effect */
+    padding: 20px 0;
+    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
     will-change: opacity, transform;
-}
-
-.carousel-track:active {
-    cursor: grabbing;
-}
-
-.loader {
-    width: 100%;
-    text-align: center;
-    padding: 100px;
-    color: var(--primary-color);
-    font-size: 1.2rem;
-    letter-spacing: 2px;
 }
 
 .project-card {
     flex: 0 0 calc(33.333% - 20px);
-    /* 3 cards per view approx */
-    position: relative;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     transition: var(--transition);
+    position: relative;
 }
 
 .project-img-wrapper {
@@ -315,6 +310,10 @@ h3 {
     height: 100%;
     object-fit: cover;
     transition: transform 0.8s ease;
+}
+
+.project-img-wrapper:hover .project-img {
+    transform: scale(1.1);
 }
 
 .project-info {
@@ -335,21 +334,16 @@ h3 {
     display: block;
     font-size: 0.95rem;
     margin-bottom: 2px;
-    font-weight: 500;
 }
 
 .project-ambiente {
     font-size: 1.3rem;
-    margin: 10px 0 2px;
-    color: var(--text-color);
-    font-family: 'Playfair Display', serif;
+    margin: 12px 0 4px;
 }
 
 .project-estilo {
     font-size: 0.85rem;
     color: var(--text-muted);
-    font-style: italic;
-    margin-bottom: 5px;
 }
 
 .carousel-btn {
@@ -383,16 +377,6 @@ h3 {
     right: 20px;
 }
 
-@media (max-width: 768px) {
-    .project-card {
-        flex: 0 0 300px;
-    }
-
-    .project-img-wrapper {
-        height: 400px;
-    }
-}
-
 /* Modal */
 .modal {
     display: none;
@@ -405,41 +389,82 @@ h3 {
     background-color: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
     overflow: auto;
-    padding-top: 50px;
 }
 
 .modal-content {
-    margin: auto;
-    display: block;
-    width: 80%;
-    max-width: 1000px;
+    margin: 5% auto;
+    display: flex;
+    flex-direction: row-reverse;
+    width: 90%;
+    max-width: 1200px;
+    background: var(--bg-color);
+    border: 1px solid var(--glass-border);
     animation: zoom 0.6s;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 @keyframes zoom {
     from {
-        transform: scale(0)
+        transform: scale(0.9);
+        opacity: 0;
     }
 
     to {
-        transform: scale(1)
+        transform: scale(1);
+        opacity: 1;
     }
 }
 
+.modal-img-container {
+    flex: 2;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid var(--glass-border);
+}
+
 .modal-img {
-    width: 100%;
-    height: auto;
-    border: 1px solid var(--glass-border);
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
 }
 
 .modal-info {
-    margin-top: 20px;
-    padding: 20px;
+    flex: 1;
+    padding: 60px 40px;
     background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
     color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.modal-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 25px;
+    color: var(--primary-color);
+    position: relative;
+}
+
+.modal-info h3::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: var(--primary-color);
+}
+
+#modal-desc {
     font-size: 1.1rem;
-    line-height: 1.8;
+    line-height: 2;
+    text-align: left;
+    color: var(--text-muted);
 }
 
 .modal-close {
@@ -449,15 +474,11 @@ h3 {
     color: #f1f1f1;
     font-size: 40px;
     font-weight: bold;
-    transition: 0.3s;
     cursor: pointer;
+    z-index: 10;
 }
 
-.modal-close:hover {
-    color: var(--primary-color);
-}
-
-/* About */
+/* About & Stats */
 .about-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -476,21 +497,10 @@ h3 {
     gap: 50px;
 }
 
-.stat-item {
-    display: flex;
-    flex-direction: column;
-}
-
 .stat-num {
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--primary-color);
-}
-
-.stat-label {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
 .about-img-wrapper {
@@ -513,18 +523,6 @@ h3 {
     border: 1px solid var(--glass-border);
 }
 
-.contact-description {
-    margin-bottom: 40px;
-    color: var(--text-muted);
-}
-
-.contact-links {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-bottom: 60px;
-}
-
 .contact-link {
     font-size: 2rem;
     color: var(--text-color);
@@ -541,6 +539,7 @@ h3 {
     display: flex;
     justify-content: center;
     gap: 30px;
+    margin-top: 40px;
 }
 
 .social-link {
@@ -549,11 +548,6 @@ h3 {
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    transition: var(--transition);
-}
-
-.social-link:hover {
-    color: var(--primary-color);
 }
 
 /* Footer */
@@ -561,20 +555,20 @@ h3 {
     padding: 50px 0;
     border-top: 1px solid var(--glass-border);
     text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
 }
 
 .footer-content {
     display: flex;
     justify-content: space-between;
-    font-size: 0.8rem;
-    color: var(--text-muted);
 }
 
 /* Animations Reveal */
 .reveal {
     opacity: 0;
-    transform: translateY(50px);
-    transition: all 1s ease-out;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
 }
 
 .reveal.active {
@@ -582,10 +576,76 @@ h3 {
     transform: translateY(0);
 }
 
-/* Responsive */
+/* Responsive Header & Menu */
 @media (max-width: 968px) {
+    .nav-list {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(10, 10, 10, 0.98);
+        backdrop-filter: blur(15px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        z-index: 1000;
+        border-left: 1px solid var(--glass-border);
+    }
+
+    .nav-list.active {
+        right: 0;
+    }
+
+    .nav-toggle {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30px;
+        height: 18px;
+        cursor: pointer;
+        z-index: 1100;
+    }
+
+    .nav-toggle span {
+        width: 100%;
+        height: 2px;
+        background: var(--text-color);
+        transition: 0.3s;
+    }
+
+    .nav-toggle.active span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .nav-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .nav-toggle.active span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
     .hero-title {
-        font-size: 3.5rem;
+        font-size: 3rem;
+    }
+
+    .project-card {
+        flex: 0 0 calc(100% - 40px);
+    }
+
+    .carousel-track {
+        padding: 20px 20px;
+        gap: 20px;
+    }
+
+    .carousel-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.5rem;
     }
 
     .about-container {
@@ -593,11 +653,34 @@ h3 {
         gap: 50px;
     }
 
-    .nav-list {
-        display: none;
+    .about-img-wrapper {
+        height: 400px;
     }
 
-    .nav-toggle {
-        display: block;
+    .stats {
+        justify-content: space-around;
+    }
+
+    .modal-content {
+        flex-direction: column;
+        margin: 10% auto;
+        width: 95%;
+    }
+
+    .modal-info {
+        padding: 30px 20px;
+    }
+
+    .modal-img-container {
+        border-left: none;
+        border-bottom: 1px solid var(--glass-border);
+    }
+
+    .contact-box {
+        padding: 40px 20px;
+    }
+
+    .contact-link {
+        font-size: 1.4rem;
     }
 }

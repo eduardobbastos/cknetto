@@ -5,23 +5,27 @@ description: Skill for creating modern, high-end interior design portfolio websi
 
 # Interior Design Portfolio Expert Skill
 
-This skill provides instructions for creating a premium interior design portfolio website.
+This skill provide instructions for creating a premium interior design portfolio website with dynamic content and high-end visual effects.
 
 ## Design Philosophy
-- **Minimalism & Elegance**: Use plenty of white space (or sophisticated dark modes), high-quality typography (e.g., Montserrat, Playfair Display), and a curated color palette.
-- **Visual Storytelling**: Focus on large, high-quality images and smooth transitions that showcase the design projects.
-- **Innovative Effects**: Implement glassmorphism, parallax scrolling, smooth hover reveals, and micro-animations for interactive elements.
+- **Minimalism & Elegance**: Sophisticated dark modes (`#0F0F0F`), gold/brass accents (`#C5A059`), and premium typography (Montserrat for body, Playfair Display for titles).
+- **Brand Identity**: Logo typography should be stacked (e.g., NAME in white, CATEGORY in primary color with high tracking) for a boutique feel.
+- **Micro-animations**: Interactive elements should feel alive using a custom reactive cursor and smooth hover reveals.
 
 ## Technical Requirements
-- **Structure**: HTML5 Semantic elements (`<header>`, `<main>`, `<section>`, `<footer>`).
-- **Styling**: Vanilla CSS with modern features (CSS Variables, Flexbox, Grid, Animations).
-- **Interactivity**: Vanilla JS for animations and dynamic effects. High emphasis on scroll-triggered animations (using Intersection Observer API).
-- **Deployment**: Must be compatible with GitHub Pages (static site).
+- **Structure**: Semantic HTML5 with high emphasis on visual hierarchy.
+- **Dynamic Content**: Sync projects from Google Sheets using CSV export. Implement auto-conversion for Google Drive image links to direct render links.
+- **Effects**:
+    - **Hero Puzzle Reveal**: A mosaic entry effect where image pieces fade and scale into place.
+    - **Project Carousel**: Click-driven navigation with fade-in/out transitions between views.
+    - **Split-View Modal**: Side-by-side layout for expanded projects (Description on left, Image on right).
+- **Mobile First**: Full responsiveness with a side-reveal hamburger menu and adaptive grid counts.
 
 ## Implementation Checklist
-1. **Design System**: Define a sophisticated color palette and typography.
-2. **Hero Section**: Create a "wow" first impression with a dynamic hero component.
-3. **Portfolio Grid**: Build a responsive grid with staggered reveal animations and hover effects.
-4. **Project Detail Modals/Sections**: Smooth transitions to view project details.
-5. **Contact/Footer**: Elegant and professional footer with social links.
-6. **Performance**: Optimize image loading (lazy loading) and ensure smooth 60fps animations.
+1. **Design System**: Set CSS variables for colors, transitions, and glassmorphism tokens.
+2. **Hero Animation**: Build a grid-based puzzle reveal for the main hero image.
+3. **Dynamic Data**: Setup `fetch` logic for Google Sheets and CSV parsing with field-quote handling.
+4. **Custom Cursor**: Implement a custom dot/ring cursor that reacts to hoverable elements.
+5. **Project Carousel**: Build a carousel that adjusts card count based on screen width (3 vs 1).
+6. **Responsive Navigation**: Create a persistent header that adds background on scroll and a mobile-friendly slide-out menu.
+7. **Performance**: Use CSS `will-change` and optimized image URLs for buttery smooth interactions.
