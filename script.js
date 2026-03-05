@@ -29,6 +29,11 @@ function getDirectImageUrl(url) {
     return url;
 }
 
+// Global state for Gallery
+let allProjects = [];
+let currentProjectImages = [];
+let currentImageIndex = 0;
+
 // Dynamic Projects Loading
 async function fetchProjects() {
     try {
@@ -41,9 +46,33 @@ async function fetchProjects() {
         if (!carousel) return;
         carousel.innerHTML = '';
 
-        const projects = rows.map(row => {
+        allProjects = rows.map(row => {
             const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             if (!cols || cols.length < 6) return null;
+
+            // Build gallery array from remaining columns (pairs: img, desc)
+            const gallery = [];
+
+            // First item in gallery is the main image (col 5)
+            const mainImgUrl = cols[5] ? cols[5].trim().replace(/^"|"$/g, '') : '';
+            if (mainImgUrl) {
+                gallery.push({
+                    url: getDirectImageUrl(mainImgUrl),
+                    desc: cols[3].trim().replace(/^"|"$/g, '') // Main description
+                });
+            }
+
+            // Additional items start from col 6 (Url img1, Desc img1, etc.)
+            for (let i = 6; i < cols.length; i += 2) {
+                const imgUrl = cols[i] ? cols[i].trim().replace(/^"|"$/g, '') : '';
+                const imgDesc = cols[i + 1] ? cols[i + 1].trim().replace(/^"|"$/g, '') : '';
+                if (imgUrl && imgUrl.startsWith('http')) {
+                    gallery.push({
+                        url: getDirectImageUrl(imgUrl),
+                        desc: imgDesc || cols[3].trim().replace(/^"|"$/g, '') // Fallback
+                    });
+                }
+            }
 
             return {
                 cliente: cols[0].trim().replace(/^"|"$/g, ''),
@@ -51,11 +80,12 @@ async function fetchProjects() {
                 ambiente: cols[2].trim().replace(/^"|"$/g, ''),
                 descricao: cols[3].trim().replace(/^"|"$/g, ''),
                 estilo: cols[4].trim().replace(/^"|"$/g, ''),
-                img: getDirectImageUrl(cols[5])
+                mainImg: getDirectImageUrl(cols[5]),
+                gallery: gallery
             };
         }).filter(p => p !== null);
 
-        renderCarousel(projects);
+        renderCarousel(allProjects);
     } catch (error) {
         console.error('Erro ao buscar projetos:', error);
         const carousel = document.getElementById('projects-carousel');
@@ -67,12 +97,12 @@ function renderCarousel(projects) {
     const carousel = document.getElementById('projects-carousel');
     if (!carousel) return;
 
-    projects.forEach((project) => {
+    projects.forEach((project, index) => {
         const card = document.createElement('div');
         card.className = 'project-card';
         card.innerHTML = `
-            <div class="project-img-wrapper" onclick="openModal('${project.img}', '${project.descricao.replace(/'/g, "\\'")}')">
-                <img src="${project.img}" alt="${project.ambiente}" class="project-img" onerror="this.src='assets/portfolio/living_room.png'">
+            <div class="project-img-wrapper" onclick="openGallery(${index})">
+                <img src="${project.mainImg}" alt="${project.ambiente}" class="project-img" onerror="this.src='assets/portfolio/living_room.png'">
             </div>
             <div class="project-info">
                 <span class="project-label">Cliente</span>
@@ -91,17 +121,50 @@ function renderCarousel(projects) {
     initCarouselLogic();
 }
 
-// Modal Logic
-function openModal(imgSrc, description) {
+// Modal/Gallery Logic
+function openGallery(projectIdx) {
+    const project = allProjects[projectIdx];
+    currentProjectImages = project.gallery;
+    currentImageIndex = 0;
+
     const modal = document.getElementById('project-modal');
+    const modalTitle = document.getElementById('modal-title');
+
+    if (modal) {
+        modal.style.display = "block";
+        modalTitle.innerText = project.ambiente;
+        updateModalImage();
+    }
+}
+
+function updateModalImage() {
     const modalImg = document.getElementById('modal-img');
     const modalDesc = document.getElementById('modal-desc');
+    const currentIdxEl = document.getElementById('current-img-idx');
+    const totalCountEl = document.getElementById('total-img-count');
 
-    if (modal && modalImg && modalDesc) {
-        modal.style.display = "block";
-        modalImg.src = imgSrc;
-        modalDesc.innerText = description;
+    const imageData = currentProjectImages[currentImageIndex];
+    if (imageData) {
+        modalImg.style.opacity = '0';
+        setTimeout(() => {
+            modalImg.src = imageData.url;
+            modalDesc.innerText = imageData.desc;
+            currentIdxEl.innerText = currentImageIndex + 1;
+            totalCountEl.innerText = currentProjectImages.length;
+            modalImg.style.opacity = '1';
+        }, 300);
     }
+}
+
+// Modal Navigation
+document.getElementById('modal-next').onclick = () => {
+    currentImageIndex = (currentImageIndex + 1) % currentProjectImages.length;
+    updateModalImage();
+}
+
+document.getElementById('modal-prev').onclick = () => {
+    currentImageIndex = (currentImageIndex - 1 + currentProjectImages.length) % currentProjectImages.length;
+    updateModalImage();
 }
 
 const closeBtn = document.querySelector('.modal-close');
@@ -151,7 +214,6 @@ function createHeroPuzzle() {
     });
 }
 
-// Single definition of initCarouselLogic
 function initCarouselLogic() {
     const track = document.getElementById('projects-carousel');
     const prevBtn = document.querySelector('.carousel-btn.prev');
@@ -187,7 +249,7 @@ function initCarouselLogic() {
     nextBtn.addEventListener('click', () => {
         const cardsPerView = getCardsPerView();
         if (currentIndex < totalCards - cardsPerView) {
-            currentIndex += 1; // Always 1 by 1
+            currentIndex += 1;
         } else {
             currentIndex = 0;
         }
@@ -196,7 +258,7 @@ function initCarouselLogic() {
 
     prevBtn.addEventListener('click', () => {
         if (currentIndex > 0) {
-            currentIndex -= 1; // Always 1 by 1
+            currentIndex -= 1;
         } else {
             currentIndex = Math.max(0, totalCards - getCardsPerView());
         }

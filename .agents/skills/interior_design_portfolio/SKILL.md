@@ -20,6 +20,10 @@ This skill provide instructions for creating a premium interior design portfolio
     - **Project Carousel**: Click-driven navigation with fade-in/out transitions between views.
     - **Split-View Modal**: Side-by-side layout for expanded projects (Description on left, Image on right).
 - **Mobile First**: Full responsiveness with a side-reveal hamburger menu and adaptive grid counts.
+- **SEO & Social Share**: 
+    - Full optimization for Google (Title/Description).
+    - WhatsApp/Instagram preview (Open Graph tags).
+    - Professional social preview images.
 
 ## Implementation Checklist
 1. **Design System**: Set CSS variables for colors, transitions, and glassmorphism tokens.
