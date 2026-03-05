@@ -144,28 +144,35 @@ function updateModalImage() {
     const totalCountEl = document.getElementById('total-img-count');
 
     const imageData = currentProjectImages[currentImageIndex];
-    if (imageData) {
-        modalImg.style.opacity = '0';
-        setTimeout(() => {
-            modalImg.src = imageData.url;
-            modalDesc.innerText = imageData.desc;
-            currentIdxEl.innerText = currentImageIndex + 1;
-            totalCountEl.innerText = currentProjectImages.length;
-            modalImg.style.opacity = '1';
-        }, 300);
+    if (imageData && modalImg) {
+        modalImg.src = imageData.url;
+        modalDesc.innerText = imageData.desc;
+        currentIdxEl.innerText = currentImageIndex + 1;
+        totalCountEl.innerText = currentProjectImages.length;
     }
 }
 
-// Modal Navigation
-document.getElementById('modal-next').onclick = () => {
-    currentImageIndex = (currentImageIndex + 1) % currentProjectImages.length;
-    updateModalImage();
+function flipPage(direction) {
+    const activeImg = document.getElementById('modal-img');
+    if (!activeImg || currentProjectImages.length < 2) return;
+
+    const animationClass = direction === 'next' ? 'flip-right' : 'flip-left';
+    activeImg.classList.add(animationClass);
+
+    setTimeout(() => {
+        if (direction === 'next') {
+            currentImageIndex = (currentImageIndex + 1) % currentProjectImages.length;
+        } else {
+            currentImageIndex = (currentImageIndex - 1 + currentProjectImages.length) % currentProjectImages.length;
+        }
+        updateModalImage();
+        activeImg.classList.remove(animationClass);
+    }, 400);
 }
 
-document.getElementById('modal-prev').onclick = () => {
-    currentImageIndex = (currentImageIndex - 1 + currentProjectImages.length) % currentProjectImages.length;
-    updateModalImage();
-}
+// Modal Navigation
+document.getElementById('modal-next').onclick = () => flipPage('next');
+document.getElementById('modal-prev').onclick = () => flipPage('prev');
 
 const closeBtn = document.querySelector('.modal-close');
 if (closeBtn) {
