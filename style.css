@@ -152,6 +152,60 @@ h3 {
     display: none;
 }
 
+/* Navigation Dropdown */
+.nav-item-dropdown {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: rgba(15, 15, 15, 0.98);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(15px);
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    padding: 10px 0;
+    z-index: 1001;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.nav-item-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-link {
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: var(--transition);
+}
+
+.dropdown-link:hover {
+    color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.03);
+    padding-left: 25px;
+}
+
+.caret {
+    font-size: 0.7rem;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
 /* Hero */
 .hero {
     height: 100vh;

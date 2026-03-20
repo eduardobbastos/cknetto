@@ -168,6 +168,19 @@ const PortfolioApp = (() => {
             const data = await response.text();
             
             const rows = parseCSV(data).slice(1);
+            
+            if (rows.length > 0) {
+                const firstCols = rows[0];
+                const tituloPag1 = firstCols[3] ? firstCols[3].trim().replace(/^"|"$/g, '') : '';
+                const tituloPag2 = firstCols[11] ? firstCols[11].trim().replace(/^"|"$/g, '') : '';
+                
+                const menu1 = document.getElementById('submenu-pag1');
+                const menu2 = document.getElementById('submenu-pag2');
+                
+                if (menu1 && tituloPag1) menu1.innerText = tituloPag1;
+                if (menu2 && tituloPag2) menu2.innerText = tituloPag2;
+            }
+
             const servicesGrid = document.getElementById('services-grid');
             if (!servicesGrid) return;
             

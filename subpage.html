@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cknetto interiores | Serviço</title>
+    <meta name="description" content="Detalhes do serviço - cknetto interiores">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .subpage-hero {
+            padding-top: 150px;
+            padding-bottom: 50px;
+            text-align: center;
+            animation: zoom 0.8s;
+        }
+        .subpage-description {
+            max-width: 800px;
+            margin: 0 auto 50px auto;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: center;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .gallery-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 15px;
+            text-align: center;
+            transition: var(--transition);
+        }
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 350px;
+            object-fit: contain;
+            background: rgba(0,0,0,0.5);
+            margin-bottom: 15px;
+        }
+        .gallery-desc {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            font-style: italic;
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="custom-cursor"></div>
+
+    <header class="header scrolled">
+        <nav class="nav container">
+            <a href="index.html#home" class="logo">
+                <img src="https://lh3.googleusercontent.com/u/0/d/1rQQpfq2N7snAoA8oUjyQ-XmWFBhHbQ1Z" alt="cknetto" class="logo-img">
+                <div class="logo-text-group">
+                    <span class="logo-name">CKNETTO</span>
+                    <span class="logo-type">INTERIORES</span>
+                </div>
+            </a>
+            <ul class="nav-list">
+                <li><a href="index.html#home" class="nav-link">Home</a></li>
+                <li><a href="index.html#projects" class="nav-link">Projetos</a></li>
+                <li class="nav-item-dropdown">
+                    <a href="index.html#services" class="nav-link">Serviços <span class="caret">&#9662;</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="subpage.html?page=1" class="dropdown-link" id="submenu-pag1">Carregando...</a></li>
+                        <li><a href="subpage.html?page=2" class="dropdown-link" id="submenu-pag2">Carregando...</a></li>
+                    </ul>
+                </li>
+                <li><a href="index.html#about" class="nav-link">Sobre</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contato</a></li>
+            </ul>
+            <div class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <main style="min-height: 80vh">
+        <section class="subpage-hero container" id="subpage-content">
+            <div class="loader">Carregando conteúdo...</div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <p id="footer-rights">&copy; cknetto interiores</p>
+            <p>Design by eduardo bastos consultorias</p>
+        </div>
+    </footer>
+
+    <!-- Modal for Project Details -->
+    <div id="project-modal" class="modal">
+        <span class="modal-close">&times;</span>
+        <div class="modal-content">
+            <div class="modal-img-container">
+                <button class="modal-btn prev" id="modal-prev">&lsaquo;</button>
+                <div class="gallery-book" id="gallery-book">
+                    <img id="modal-img" src="" alt="Expanded Project Image" class="book-page active-page">
+                </div>
+                <button class="modal-btn next" id="modal-next">&rsaquo;</button>
+            </div>
+            <div class="modal-info">
+                <h3 id="modal-title">Detalhes</h3>
+                <p id="modal-desc"></p>
+                <div class="modal-counter"><span id="current-img-idx">1</span> / <span id="total-img-count">1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="subpage.js"></script>
+</body>
+
+</html>
