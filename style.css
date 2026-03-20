@@ -44,7 +44,7 @@ h3 {
 }
 
 .section {
-    padding: 100px 0;
+    padding: 50px 0;
 }
 
 /* Custom Cursor */
@@ -99,7 +99,7 @@ h3 {
 }
 
 .logo-img {
-    height: 40px;
+    height: 80px;
     width: auto;
     object-fit: contain;
 }
@@ -112,7 +112,7 @@ h3 {
 }
 
 .logo-name {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: 700;
     letter-spacing: 4px;
     color: var(--text-color);
@@ -123,7 +123,7 @@ h3 {
     font-size: 0.65rem;
     letter-spacing: 5px;
     color: var(--primary-color);
-    font-weight: 400;
+    font-weight: 800;
     margin-top: 4px;
     text-transform: uppercase;
 }
@@ -173,7 +173,7 @@ h3 {
 }
 
 .puzzle-piece {
-    background-image: url('assets/portfolio/living_room.png');
+    background-image: url('https://lh3.googleusercontent.com/u/0/d/1xGz1RerCN8vWtBfmA5DOsGGdNREAquFj');
     background-size: 100vw 100vh;
     background-attachment: fixed;
     opacity: 0;
