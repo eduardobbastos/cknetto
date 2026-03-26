@@ -201,6 +201,14 @@ const PortfolioApp = (() => {
                 const formattedDesc = descricaoRaw.replace(/\n/g, '<br>');
                 const iconSvg = icons[index % icons.length];
                 
+                let finalUrl = saibaMais;
+                let targetAttr = 'target="_blank"';
+                
+                if (finalUrl.includes('eduardobbastos.github.io/cknetto/')) {
+                    finalUrl = finalUrl.split('eduardobbastos.github.io/cknetto/')[1] || finalUrl;
+                    targetAttr = ''; // Abre na mesma aba para links internos
+                }
+                
                 const serviceCard = document.createElement('div');
                 serviceCard.className = 'service-card reveal active';
                 serviceCard.innerHTML = `
@@ -209,7 +217,7 @@ const PortfolioApp = (() => {
                     </div>
                     <h3>${titulo}</h3>
                     <p>${formattedDesc}</p>
-                    <a href="${saibaMais}" target="_blank" class="service-link">Saiba mais &rsaquo;</a>
+                    <a href="${finalUrl}" ${targetAttr} class="service-link">Saiba mais &rsaquo;</a>
                 `;
                 servicesGrid.appendChild(serviceCard);
             });

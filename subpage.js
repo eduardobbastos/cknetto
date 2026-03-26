@@ -4,6 +4,9 @@ const SubpageApp = (() => {
     let cursor = null;
     let currentProjectImages = [];
     let currentImageIndex = 0;
+    let currentSubpageGalleries = [];
+    let currentGalleryIndex = 0;
+    let currentSubpageTitle = "";
 
     function initCursor() {
         cursor = document.querySelector('.custom-cursor');
@@ -73,37 +76,49 @@ const SubpageApp = (() => {
             const rows = parseCSV(data).slice(1);
             if (rows.length === 0) return;
             
-            const cols = rows[0];
+            const firstCols = rows[0];
             
             // Render menu items
-            const tituloPag1 = cols[3] ? cols[3].trim().replace(/^"|"$/g, '') : '';
-            const tituloPag2 = cols[11] ? cols[11].trim().replace(/^"|"$/g, '') : ''; // Changed from 10 to 11 due to new col
+            const tituloPag1 = firstCols[3] ? firstCols[3].trim().replace(/^"|"$/g, '') : '';
+            const tituloPag2 = firstCols[11] ? firstCols[11].trim().replace(/^"|"$/g, '') : '';
             const menu1 = document.getElementById('submenu-pag1');
             const menu2 = document.getElementById('submenu-pag2');
             if (menu1 && tituloPag1) menu1.innerText = tituloPag1;
             if (menu2 && tituloPag2) menu2.innerText = tituloPag2;
 
-            // Page settings mapped to appropriate indices
-            let title, description;
-            let photos = [];
+            currentSubpageTitle = pageId === '1' ? tituloPag1 : tituloPag2;
+            document.title = `${currentSubpageTitle} | cknetto interiores`;
 
-            if (pageId === '1') {
-                document.title = `${tituloPag1} | cknetto interiores`;
-                title = tituloPag1;
-                description = cols[4] ? cols[4].trim().replace(/^"|"$/g, '') : '';
-                photos.push({ url: cols[5], desc: cols[6] });
-                photos.push({ url: cols[7], desc: cols[8] });
-                photos.push({ url: cols[9], desc: cols[10] }); // Added col 10 mapping
-            } else {
-                document.title = `${tituloPag2} | cknetto interiores`;
-                title = tituloPag2;
-                description = cols[12] ? cols[12].trim().replace(/^"|"$/g, '') : '';
-                photos.push({ url: cols[13], desc: cols[14] });
-                photos.push({ url: cols[15], desc: cols[16] });
-                photos.push({ url: cols[17], desc: cols[18] });
-            }
+            currentSubpageGalleries = [];
+            
+            rows.forEach(cols => {
+                let desc = '';
+                let photos = [];
+                if (pageId === '1') {
+                    if (cols.length >= 11) {
+                        desc = cols[4] ? cols[4].trim().replace(/^"|"$/g, '') : '';
+                        if (desc) {
+                            photos.push({ url: cols[5], desc: cols[6] });
+                            photos.push({ url: cols[7], desc: cols[8] });
+                            photos.push({ url: cols[9], desc: cols[10] });
+                            currentSubpageGalleries.push({ description: desc, photos: photos });
+                        }
+                    }
+                } else {
+                    if (cols.length >= 19) {
+                        desc = cols[12] ? cols[12].trim().replace(/^"|"$/g, '') : '';
+                        if (desc) {
+                            photos.push({ url: cols[13], desc: cols[14] });
+                            photos.push({ url: cols[15], desc: cols[16] });
+                            photos.push({ url: cols[17], desc: cols[18] });
+                            currentSubpageGalleries.push({ description: desc, photos: photos });
+                        }
+                    }
+                }
+            });
 
-            renderPage(title, description, photos);
+            currentGalleryIndex = 0;
+            renderCurrentGallery();
 
         } catch (error) {
             console.error(error);
@@ -111,31 +126,80 @@ const SubpageApp = (() => {
         }
     }
 
-    function renderPage(title, description, photos) {
+    function nextGallery() {
+        if (currentGalleryIndex < currentSubpageGalleries.length - 1) {
+            currentGalleryIndex++;
+            renderCurrentGallery();
+        }
+    }
+
+    function prevGallery() {
+        if (currentGalleryIndex > 0) {
+            currentGalleryIndex--;
+            renderCurrentGallery();
+        }
+    }
+
+    function renderCurrentGallery() {
+        if (currentSubpageGalleries.length === 0) {
+            document.getElementById('subpage-content').innerHTML = '<p>Nenhuma galeria encontrada para esta página.</p>';
+            return;
+        }
+
+        const gallery = currentSubpageGalleries[currentGalleryIndex];
         const container = document.getElementById('subpage-content');
-        const formattedDesc = description ? description.replace(/\n/g, '<br>') : '';
+        const formattedDesc = gallery.description ? gallery.description.replace(/\n/g, '<br>') : '';
+        const title = currentSubpageTitle;
         
         // Map current gallery images for the modal
-        currentProjectImages = photos.map(photo => ({
+        currentProjectImages = gallery.photos.map(photo => ({
             url: photo.url ? getDirectImageUrl(photo.url.trim().replace(/^"|"$/g, '')) : '',
             desc: photo.desc ? photo.desc.trim().replace(/^"|"$/g, '') : ''
         })).filter(photo => photo.url !== '' && photo.url !== 'assets/portfolio/living_room.png');
         
-        let galleryHtml = '<div class="gallery-grid">';
+        let contentHtml = '';
+
+        contentHtml += '<div class="timeline-container">';
         currentProjectImages.forEach((photo, index) => {
-            galleryHtml += `
-                <div class="gallery-item" onclick="SubpageApp.openGallery(${index})" style="cursor: zoom-in;">
-                    <img src="${photo.url}" alt="${photo.desc || title}">
-                    ${photo.desc ? `<div class="gallery-desc">${photo.desc}</div>` : ''}
+            const position = index % 2 === 0 ? 'left' : 'right';
+            contentHtml += `
+                <div class="timeline-item ${position}">
+                    <div class="timeline-content">
+                        <img src="${photo.url}" alt="${title} - Imagem ${index + 1}" onclick="SubpageApp.openGallery(${index})">
+                        ${photo.desc ? `<div class="timeline-desc">${photo.desc}</div>` : ''}
+                    </div>
                 </div>
             `;
         });
-        galleryHtml += '</div>';
+        contentHtml += '</div>';
+
+        let innerContent = '';
+        if (currentSubpageGalleries.length > 1) {
+            let navHtml = `
+                <button class="gallery-side-btn prev" onclick="SubpageApp.prevGallery()" ${currentGalleryIndex === 0 ? 'disabled' : ''}>&#10094;</button>
+                <button class="gallery-side-btn next" onclick="SubpageApp.nextGallery()" ${currentGalleryIndex === currentSubpageGalleries.length - 1 ? 'disabled' : ''}>&#10095;</button>
+            `;
+            
+            innerContent = `
+                <div class="gallery-nav-container">
+                    ${navHtml}
+                    ${contentHtml}
+                </div>
+                <div class="gallery-counter">Galeria ${currentGalleryIndex + 1} de ${currentSubpageGalleries.length}</div>
+            `;
+        } else {
+            innerContent = contentHtml;
+        }
+
+        // Apply a quick animation reflow to show transition
+        container.style.animation = 'none';
+        container.offsetHeight; 
+        container.style.animation = 'zoom 0.5s';
 
         container.innerHTML = `
             <h1 class="hero-title" style="margin-bottom: 30px;"><span>${title}</span></h1>
             <p class="subpage-description">${formattedDesc}</p>
-            ${galleryHtml}
+            ${innerContent}
         `;
     }
 
@@ -243,7 +307,9 @@ const SubpageApp = (() => {
                 el.addEventListener('mouseleave', () => cursor && cursor.classList.remove('hover'));
             });
         },
-        openGallery: openGallery
+        openGallery: openGallery,
+        nextGallery: nextGallery,
+        prevGallery: prevGallery
     };
 })();
 
